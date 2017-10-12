@@ -2,28 +2,41 @@
     #include <stdio.h>
 
     #include "miniC.yacc.c"
-    int lineno = 0, charno = 0, wordno = 0;
 %}
 
 digits [0-9]+
-operator [+*/-]
+number {digits}(\.{digits})?
+operator1 [\+\-]
+operator2 [\*/]
+splitchar [;\n]
+lb [\(]
+rb [\)]
 
 %%
-{digits} {
-    yylval = atoi(yytext);
+{number} {
+    yylval = atof(yytext);
 //    printf("lex find dights:%d\n", yylval);
-    return DIGITS;
+    return NUMBER;
 }
 
-{operator} {
+{operator1} {
     yylval = (int)(yytext[0]);
 //    printf("lex find operator:%c\n", (int)(yylval));
-    return OPERATOR;
+    return OPERATOR1;
 }
 
-. {
-    return OTHER;
+{operator2} {
+    yylval = (int)(yytext[0]);
+//    printf("lex find operator:%c\n", (int)(yylval));
+    return OPERATOR2;
 }
+{splitchar} { return SPLITCHAR; }
+
+{lb} { return LB; }
+
+{rb} { return RB; }
+
+. {}
 
 %%
 
