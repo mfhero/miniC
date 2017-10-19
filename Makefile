@@ -48,4 +48,4 @@ clean :
 parser : $(CPRE_BUILD)
 
 zip : 
-	git archive --format zip --output ../miniC.zip master 
+	git archive --format zip --output ../1400012705.zip master 
