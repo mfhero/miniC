@@ -15,9 +15,11 @@ CPRE_BUILD := $(GEN_LEX) $(GEN_YACC) $(INCLUDE_FILES)
 ECHOS := @echo "\033[32m
 ECHOE := \033[0m"
 
-.PHONY : test clean build_dir 
+.PHONY : all test clean build_dir parser
 
-tinyC : $(OBJS)
+all : $(BUILD_DIR)/tinyC 
+
+$(BUILD_DIR)/tinyC : $(OBJS) $(CPRE_BUILD)
 	$(ECHOS)Building tinyC... $(ECHOE)
 	$(CC) $(CFLAGS) -o $@ $(OBJS)
 	$(ECHOS)Success! $(ECHOE)
@@ -31,15 +33,19 @@ $(BUILD_DIR)/%.o: %.c $(CPRE_BUILD)
 	$(ECHOS)CXX $< $(ECHOE)
 	$(CC) $(CFLAGS) $< -o $@ -c 
 
-$(GEN_DIR)/%.lex.c : lex/%.lex | build_dir
+$(GEN_DIR)/%.lex.c : lex/%.l | build_dir
 	$(ECHOS)FLEX $< $(ECHOE)
-	@flex -o $@ $<
+	flex -o $@ $<
 
 $(GEN_DIR)/%.yacc.c : lex/%.y | build_dir 
 	$(ECHOS)YACC $< $(ECHOE)
-	@yacc -o $@ $<
+	yacc -o $@ $<
 
 clean :
 	@rm -rf $(BUILD_DIR)
 	$(ECHOS)Done$(ECHOE)
 	
+parser : $(CPRE_BUILD)
+
+zip : 
+	git archive --format zip --output ../miniC.zip master 
