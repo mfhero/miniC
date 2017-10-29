@@ -7,9 +7,10 @@
 //#include "scan.h"
 /* lexeme of identifier or reserved word */
 
-#include "miniC.yacc.c"
-
+#define MAXTOKENLEN 40
 char tokenString[MAXTOKENLEN+1];
+
+#include "miniC.yacc.c"
 %}
 
 digit       [0-9]
@@ -47,8 +48,8 @@ whitespace  [ \t]+
 ","             {return COMMA;}
 "{"             {return LBLOCK;}
 "}"             {return RBLOCK;}
-{number}        {return NUM;}
-{identifier}    {return ID;}
+{number}        {yylval = newExpNode(ConstK); yylval->attr.name = StrClone(yytext); yylval->attr.val = atof(yytext); return NUM;}
+{identifier}    {yylval = newExpNode(IdK); yylval->attr.name = StrClone(yytext); return ID;}
 {newline}       {lineno++;}
 {whitespace}    {/* skip whitespace */}
 "//"            { char c;
@@ -61,10 +62,10 @@ whitespace  [ \t]+
 %%
 
 TokenType getToken(void){ 
-    static int firstTime = TRUE;
+    static int firstTime = 1;
     TokenType currentToken;
     if (firstTime) { 
-        firstTime = FALSE;
+        firstTime = 0;
     //    lineno++;
     //    yyin = source;
     //    yyout = listing;

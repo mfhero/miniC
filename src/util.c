@@ -15,35 +15,47 @@ void raiseException(const char *message, int lineno) {
 }   
 
 void printToken(const TokenType token, const char* tokenString) {
+    switch (token) {
+        case PLUS : printf("+"); break;
+        case MINUS: printf("-"); break;    
+        case TIMES: printf("*"); break;   
+        case OVER: printf("/"); break; 
+        case AND: printf("&&"); break; 
+        case NOT: printf("!"); break; 
+        case OR: printf("||"); break; 
+        default: printf("%d", (int)token); break;
+    }
     printf("%s\n", tokenString);
 }
 
 TreeNode *newStmtNode(StmtKind kind)
 {
+    printf("build stmt node\n");
     TreeNode* t = (TreeNode *)malloc(sizeof(TreeNode));
     if (t == NULL) 
         raiseException("Out of memory", lineno);
     else {
         for (int i = 0; i < MAXCHILDREN; i++)
-            t->child[i] = NULL:
+            t->child[i] = NULL;
         t->sibling = NULL;
-        t-nodekind = StmtK;
+        t->nodekind = StmtK;
         t->kind.stmt = kind;
         t->lineno = lineno;
     }
     return t;
 }
 
-TreeNode *newStmtNode(ExpKind kind)
+TreeNode *newExpNode(ExpKind kind)
 {
+    printf("build exp node\n");
     TreeNode* t = (TreeNode *)malloc(sizeof(TreeNode));
     if (t == NULL) 
         raiseException("Out of memory", lineno);
     else {
         for (int i = 0; i < MAXCHILDREN; i++)
-            t->child[i] = NULL:
+            t->child[i] = NULL;
         t->sibling = NULL;
-        t-nodekind = ExpK;
+        t->nodekind = ExpK;
         t->kind.exp = kind;
         t->lineno = lineno;
         t->type = Void;
@@ -51,7 +63,41 @@ TreeNode *newStmtNode(ExpKind kind)
     return t;
 }
 
-char* strClone(char* s) {
+TreeNode *newFuncNode(FuncKind kind)
+{
+    printf("build func node\n");
+    TreeNode* t = (TreeNode *)malloc(sizeof(TreeNode));
+    if (t == NULL) 
+        raiseException("Out of memory", lineno);
+    else {
+        for (int i = 0; i < MAXCHILDREN; i++)
+            t->child[i] = NULL;
+        t->sibling = NULL;
+        t->nodekind = FuncK;
+        t->kind.func = kind;
+        t->lineno = lineno;
+        t->type = Void;
+    }
+    return t;
+}
+
+TreeNode *newTurpleNode()
+{
+    TreeNode* t = (TreeNode *)malloc(sizeof(TreeNode));
+    if (t == NULL) 
+        raiseException("Out of memory", lineno);
+    else {
+        for (int i = 0; i < MAXCHILDREN; i++)
+            t->child[i] = NULL;
+        t->sibling = NULL;
+        t->nodekind = TurpleK;
+        t->lineno = lineno;
+        t->type = Void;
+    }
+    return t;
+}
+
+char* StrClone(char* s) {
     if (s == NULL)
         return NULL;
     char *t = malloc(strlen(s) + 1);
@@ -72,52 +118,64 @@ static void printSpaces(void) {
 
 void printTree(TreeNode * tree) {
     indentno += 2;
+    if (indentno > 20)
+        return ;
     while (tree != NULL) {
         printSpaces();
         if (tree->nodekind==StmtK) { 
             switch (tree->kind.stmt) {
                 case IfK:
-                fprintf(listing,"If\n");
+                printf("If\n");
                 break;
-                case RepeatK:
-                fprintf(listing,"Repeat\n");
+                case WhileK:
+                printf("While\n");
                 break;
                 case AssignK:
-                fprintf(listing,"Assign to: %s\n",tree->attr.name);
-                break;
-                case ReadK:
-                fprintf(listing,"Read: %s\n",tree->attr.name);
-                break;
-                case WriteK:
-                fprintf(listing,"Write\n");
+                printf("Assign to: %s\n",tree->attr.name);
                 break;
                 default:
-                fprintf(listing,"Unknown ExpNode kind\n");
+                printf("Unknown ExpNode kind\n");
                 break;
             }
         }
         else if (tree->nodekind==ExpK) { 
             switch (tree->kind.exp) {
                 case OpK:
-                fprintf(listing,"Op: ");
+                printf("Op: ");
                 printToken(tree->attr.op,"\0");
                 break;
                 case ConstK:
-                fprintf(listing,"Const: %d\n",tree->attr.val);
+                printf("Const: %d\n",tree->attr.val);
                 break;
                 case IdK:
-                fprintf(listing,"Id: %s\n",tree->attr.name);
+                printf("Id: %s\n",tree->attr.name);
                 break;
                 default:
-                fprintf(listing,"Unknown ExpNode kind\n");
+                printf("Unknown ExpNode kind\n");
                 break;
             }
         }
-        else fprintf(listing,"Unknown node kind\n");
+        else if (tree->nodekind==TurpleK) {
+            printf("Turple\n");
+        } else if (tree->nodekind==FuncK) {
+            printf("Function: %s\n", tree->attr.name);
+        } else 
+            printf("Unknown node kind\n");
         for (int i = 0; i < MAXCHILDREN; i++)
-        printTree(tree->child[i]);
-        tree = tree->sibling;
+            printTree(tree->child[i]);
+ //       tree = tree->sibling;
+        tree = NULL;
     }
-    intdentno -= 2;
+    indentno -= 2;
 }   
 
+int RegisterSymbol(char* name, int size) {
+}
+
+int IDhash(const char* ID) {
+    int total = 0;
+    for (int i = 0; ID[i] != '\0'; i++) 
+        total = (total * 52 +
+            ID[i] - (ID[i] >= 'a'? 'a' - 26 : 'A')) % 9999997;
+    return total;
+}

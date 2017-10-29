@@ -13,45 +13,74 @@
 #include <ctype.h>
 #include <string.h>
 
-typedef enum {
-    /* book-keeping tokens */
-    ENDFILE,ERROR,
-    /* reserved words */
-    IF,THEN,ELSE,END,REPEAT,UNTIL,READ,WRITE,
-    /* multicharacter tokens */
-    ID,NUM,
-    /* special symbols */
-    ASSIGN,EQ,LT,PLUS,MINUS,TIMES,OVER,LPAREN,RPAREN,SEMI
-} TokenType;
+#ifndef YYTOKENTYPE
+# define YYTOKENTYPE
+  enum yytokentype
+  {
+    IF = 258,
+    ELSE = 259,
+    WHILE = 260,
+    RETURN = 261,
+    INT = 262,
+    MAIN = 263,
+    ASSIGN = 264,
+    PLUS = 265,
+    MINUS = 266,
+    TIMES = 267,
+    OVER = 268,
+    EQ = 269,
+    LT = 270,
+    GT = 271,
+    COMMA = 272,
+    NE = 273,
+    NOT = 274,
+    OR = 275,
+    AND = 276,
+    LPAREN = 277,
+    RPAREN = 278,
+    LPARENX = 279,
+    RPARENX = 280,
+    SEMI = 281,
+    LBLOCK = 282,
+    RBLOCK = 283,
+    ID = 284,
+    NUM = 285,
+    ERROR = 286
+  };
+  typedef enum yytokentype TokenType;   
+#endif
+
 
 extern int lineno;
 
 /****************  Syntax tree ******************/
 
-typedef enum {StmtK,ExpK} NodeKind;
+typedef enum {StmtK,ExpK,TurpleK,FuncK} NodeKind;
 typedef enum {IfK,WhileK,AssignK,GetK,PutK} StmtKind;
-typedef enum {OpK,ConstK,IdK} ExpKind;
+typedef enum {DefK,DecK} FuncKind;
+typedef enum {OpK,ConstK,IdK,CallK} ExpKind;
 
 /* ExpType is used for type checking */
 typedef enum {Void,Integer,Boolean} ExpType;
 
-static const int MAXCHILDREN = 3;
+#define MAXCHILDREN 5
 
-struct TreeNode
+typedef struct Treenode
 { 
-    struct TreeNode* child[MAXCHILDREN];
-    struct TreeNode* sibling;
+    struct Treenode* child[MAXCHILDREN];
+    struct Treenode* sibling;
     int lineno;
     NodeKind nodekind;
-    union { StmtKind stmt; ExpKind exp;} kind;
-    union { 
+    union { StmtKind stmt; ExpKind exp; FuncKind func; } kind;
+    struct { 
         TokenType op;
         int val;
         char * name; 
     } attr;
     ExpType type; /* for type checking of exps */
-};
+} TreeNode;
 
 extern int Error;
 
+typedef const char* String;
 #endif

@@ -9,9 +9,15 @@
 #define _UTIL_H
 
 TreeNode * newStmtNode(StmtKind);
-TreeNode * newStmtNode(ExpKind);
+TreeNode * newExpNode(ExpKind);
+TreeNode * newTurpleNode();
+TreeNode * newFuncNode();
 
-char* strclone(char *);
+char* StrClone(char *);
 void printTree(TreeNode *);
+int RegisterSymbol(char* name, int size);
+void raiseException(const char* message, int lineno);
+
+int IDhash(const char* );
 
 #endif

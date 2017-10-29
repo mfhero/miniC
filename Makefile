@@ -2,7 +2,7 @@ BUILD_DIR := gnu_build
 GEN_DIR := ${BUILD_DIR}/gen
 
 CC := @gcc
-CFLAGS := -Iinclude -I${GEN_DIR} 
+CFLAGS := -Iinclude -I${GEN_DIR} -g
 
 SRCS := $(shell find src/ -name "*.c")
 OBJS := $(addprefix $(BUILD_DIR)/, ${SRCS:.c=.o}) 
@@ -15,7 +15,7 @@ CPRE_BUILD := $(GEN_LEX) $(GEN_YACC) $(INCLUDE_FILES)
 ECHOS := @echo "\033[32m
 ECHOE := \033[0m"
 
-.PHONY : all test clean build_dir parser
+.PHONY : all test clean build_dir parser zip test
 
 all : $(BUILD_DIR)/tinyC 
 
@@ -49,3 +49,6 @@ parser : $(CPRE_BUILD)
 
 zip : 
 	git archive --format zip --output ../1400012705.zip master 
+
+test : $(BUILD_DIR)/tinyC
+	./$< < test/test.cpp 

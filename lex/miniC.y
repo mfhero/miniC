@@ -4,13 +4,13 @@
 
 #include "globals.h"
 #include "util.h"
-#include "scan.h"
-#include "parse.h"
+//#include "scan.h"
+//#include "parse.h"
 
 #define YYSTYPE TreeNode *
 static char * savedName; /* for use in assignments */
 static int savedLineNo;  /* ditto */
-static TreeNode * savedTree; /* stores syntax tree for later return */
+extern TreeNode * savedTree; /* stores syntax tree for later return */
 static int yylex(void); // added 11/2/11 to ensure no conflict with lex
 static void saveStatus(void); // save token name and lineno 
 
@@ -32,7 +32,9 @@ program     : goal
 
 goal        : definitions mainfunc
                  { 
-                    $$ = $2;
+                    $$ = newTurpleNode();
+                    $$->child[0] = $1;
+                    $$->child[1] = $2;
                  }
             ;
 
@@ -50,29 +52,37 @@ definition  : vardefinition SEMI { $$ = $1; }
             ;
 
 vardefinition : INT ID {
-                    $$ = newStmtNode(VarK); 
-                    $$->attr.name = StrClone($2->attr.name);
-                    $$->attr.val = 0;
+                  //  $$ = newStmtNode(VarK); 
+                  //  $$->attr.name = StrClone($2->attr.name);
+                  //  $$->attr.val = 0;
+                  //  RegisterSymbol($2->attr.name, 0);
+                  $$ = $2;
+                  $$->attr.val = 0;
                 } 
               | INT ID LPARENX RPARENX { 
-                    $$ = newStmtNode(VarK); 
-                    $$->attr.name = StrClone($2->attr.name);
-                    $$->attr.val = -1;
+                  //  $$ = newStmtNode(VarK); 
+                  //  $$->attr.name = StrClone($2->attr.name);
+                  //  $$->attr.val = -1;
+                  //  RegisterSymbol($2->attr.name, -1);
+                  $$ = $2;
+                  $$->attr.val = -1;
                 } 
               | INT ID LPARENX NUM RPARENX 
                 {
-                    $$ = newStmtNode(VarK); 
-                    $$->attr.name = StrClone($2->attr.name);
-                    $$->attr.val = atoi($2->attr.name);
+                  //  $$ = newStmtNode(VarK); 
+                  //  $$->attr.name = StrClone($2->attr.name);
+                  //  $$->attr.val = atoi($2->attr.name);
+                  //  RegisterSymbol($2->attr.name, atoi($2->attr.name));
+                  $$ = $2;
+                  $$->attr.val = $4->attr.val;
                 }
               ;
 
-functiondefition : INT ID  
-                   LPAREN vardefinitions RPAREN LBLOCK 
-                   stmts RBLOCK                 
+functiondefition : INT ID LPAREN vardefinitions RPAREN 
+                   LBLOCK stmts RBLOCK                 
                    {
-                      $$ = newFuncNode(defK);
-                      $$->attr.name = StrClone($2->attr.name)
+                      $$ = newFuncNode(DefK);
+                      $$->attr.name = StrClone($2->attr.name);
                       $$->child[0] = $4;
                       $$->child[1] = $7;
                    }
@@ -80,14 +90,14 @@ functiondefition : INT ID
 
 functiondeclare  : INT ID LPAREN vardefinitions RPAREN SEMI 
                  {
-                     $$ = newFuncNode(decK);
+                     $$ = newFuncNode(DecK);
                      $$->attr.name = StrClone($2->attr.name);
                     $$->child[0] = $4;
                  }
                  ;
 
-vardefinitions : {$$ = NULL; }
-                 | vardefinition { $$ = $1; }
+vardefinitions : {  $$ = NULL; }
+                 | vardefinition { $$ = newTurpleNode(); $$->child[0] = $1; }
                  | vardefinitions COMMA vardefinition {
                     $$ = newTurpleNode();
                     $$->child[0] = $1;
@@ -96,15 +106,19 @@ vardefinitions : {$$ = NULL; }
                 ;
 
 stmts       : { $$ = NULL; }
-            | stmts stmt { 
+            | stmt stmts { 
                 $$ = newTurpleNode();
                 $$->child[0] = $1;
                 $$->child[1] = $2;
                 } 
             ;
 
-mainfunc    : INT MAIN LPAREN RPAREN LBLOCK stmts RBLOCK 
-                { $$ = $6; }
+mainfunc    : INT MAIN LPAREN RPAREN LBLOCK stmts RBLOCK { 
+                $$ = newFuncNode(DefK);
+                $$->attr.name = "main";
+                $$->child[0] = NULL;
+                $$->child[1] = $6;
+                }
             ;
 
 stmt        : if_stmt { $$ = $1; }
@@ -114,7 +128,7 @@ stmt        : if_stmt { $$ = $1; }
             | return_stmt { $$ = $1; }
             | vardefinition SEMI { $$ = $1; }
             | LBLOCK stmts RBLOCK { $$ = $2; }
-            | expression SEMI { $$ = $1; }
+    //        | expression SEMI { $$ = $1; }
             | ERROR  { $$ = NULL; }
             ;
 
@@ -132,32 +146,27 @@ if_stmt     : IF LPAREN expression RPAREN stmt
             ;
 
 while_stmt : WHILE LPAREN expression RPAREN stmt 
-                 { $$ = newStmtNode(RepeatK);
+                 { $$ = newStmtNode(WhileK);
                    $$->child[0] = $3;
                    $$->child[1] = $5;
                  }
             ;
 
-assign_stmt : ID { 
+assign_stmt : ID ASSIGN expression SEMI 
+                 { 
                    $$ = newStmtNode(AssignK); 
                    $$->attr.name = StrClone($1->attr.name);
                    $$->lineno = lineno;
-                 } 
-              ASSIGN expression SEMI 
-                 { 
                    $$->child[0] = $3;
                  }
             ;
 
-assign_list_stmt: ID {
-                        $$ = newStmtNode(AssignK); 
-                        $$->attr.name = StrClone($1->attr.name);
-                        $$->lineno = lineno;
-                     }
-                 
-                   LPARENX expression RPARENX ASSIGN expression 
+assign_list_stmt: ID  LPARENX expression RPARENX ASSIGN expression 
                    SEMI
                     {
+                      $$ = newStmtNode(AssignK); 
+                      $$->attr.name = StrClone($1->attr.name);
+                      $$->lineno = lineno;
                       $$->child[0] = $7;
                       $$->child[1] = $3;
                     }
@@ -252,28 +261,16 @@ term        : term TIMES factor
             | factor { $$ = $1; }
             ;
 
-factor      : LPAREN expression RPAREN
-                 { $$ = $2; }
-            | NUM
-                 { $$ = newExpNode(ConstK);
-                   $$->attr.val = atoi($1->attr.name);
-                 }
-            | ID { $$ = newExpNode(IdK);
-                   $$->attr.name =
-                         StrClone($1->attr.name);
-                 }
-            | ID { 
-                $$ = newExpNode(IdK);
+factor      : LPAREN expression RPAREN { $$ = $2; }
+            | NUM { $$ = $1; }
+            | ID { $$ = $1; }
+            | ID LPARENX expression RPARENX {
+                $$ = $1;
+                $$->child[0] = $3;
+              }
+            | ID LPAREN args RPAREN {
+                $$ = newExpNode(CallK);
                 $$->attr.name = StrClone($1->attr.name);
-                } 
-              LPARENX expression RPARENX {
-                $$->child[0] = $2;
-                }
-            | ID {
-                $$ = newExpNode(callK);
-                $$->attr.name = StrClone($1->attr.name);
-                }
-              LPAREN args RPAREN {
                 $$->child[0] = $3;
               }    
             | ERROR { $$ = NULL; }
@@ -321,4 +318,8 @@ void saveStatus(void) {
     savedName = StrClone(tokenString);
 }
 
+int yywrap() 
+{ 
+   return 1; 
+} 
 #endif
