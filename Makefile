@@ -48,8 +48,8 @@ clean :
 	
 parser : $(CPRE_BUILD)
 
-zip : 
-	git archive --format zip --output ../1400012705.zip master 
+tar : 
+	git archive --format tar --output ../1400012705.tar master 
 
 test : $(BUILD_DIR)/tinyC
 	./$< < test/test.cpp 
