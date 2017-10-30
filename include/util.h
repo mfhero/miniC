@@ -13,11 +13,12 @@ TreeNode * newExpNode(ExpKind);
 TreeNode * newTurpleNode();
 TreeNode * newFuncNode();
 
-char* StrClone(char *);
+char* StrClone(const char *);
+void printToken(const TokenType token);
 void printTree(TreeNode *);
+void Resetindent();
 int RegisterSymbol(char* name, int size);
 void raiseException(const char* message, int lineno);
 
 int IDhash(const char* );
-
 #endif

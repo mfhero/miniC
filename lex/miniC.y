@@ -92,7 +92,7 @@ functiondeclare  : INT ID LPAREN vardefinitions RPAREN SEMI
                  {
                      $$ = newFuncNode(DecK);
                      $$->attr.name = StrClone($2->attr.name);
-                    $$->child[0] = $4;
+                     $$->child[0] = $4;
                  }
                  ;
 
@@ -128,7 +128,7 @@ stmt        : if_stmt { $$ = $1; }
             | return_stmt { $$ = $1; }
             | vardefinition SEMI { $$ = $1; }
             | LBLOCK stmts RBLOCK { $$ = $2; }
-    //        | expression SEMI { $$ = $1; }
+            | expression SEMI { $$ = $1; }
             | ERROR  { $$ = NULL; }
             ;
 
@@ -167,7 +167,7 @@ assign_list_stmt: ID  LPARENX expression RPARENX ASSIGN expression
                       $$ = newStmtNode(AssignK); 
                       $$->attr.name = StrClone($1->attr.name);
                       $$->lineno = lineno;
-                      $$->child[0] = $7;
+                      $$->child[0] = $6;
                       $$->child[1] = $3;
                     }
             ;

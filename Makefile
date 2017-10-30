@@ -18,6 +18,7 @@ ECHOE := \033[0m"
 .PHONY : all test clean build_dir parser zip test
 
 all : $(BUILD_DIR)/tinyC 
+	cp $< a.out
 
 $(BUILD_DIR)/tinyC : $(OBJS) $(CPRE_BUILD)
 	$(ECHOS)Building tinyC... $(ECHOE)

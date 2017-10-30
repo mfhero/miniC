@@ -14,7 +14,7 @@ void raiseException(const char *message, int lineno) {
     Error = 1;
 }   
 
-void printToken(const TokenType token, const char* tokenString) {
+void printToken(const TokenType token) {
     switch (token) {
         case PLUS : printf("+"); break;
         case MINUS: printf("-"); break;    
@@ -23,14 +23,18 @@ void printToken(const TokenType token, const char* tokenString) {
         case AND: printf("&&"); break; 
         case NOT: printf("!"); break; 
         case OR: printf("||"); break; 
+        case EQ: printf("=="); break;
+        case LT: printf("<"); break;
+        case GT: printf(">"); break;
+        case NE: printf("!="); break;
         default: printf("%d", (int)token); break;
     }
-    printf("%s\n", tokenString);
+ //   printf("%s\n", tokenString);
 }
 
 TreeNode *newStmtNode(StmtKind kind)
 {
-    printf("build stmt node\n");
+ //   printf("build stmt node\n");
     TreeNode* t = (TreeNode *)malloc(sizeof(TreeNode));
     if (t == NULL) 
         raiseException("Out of memory", lineno);
@@ -47,7 +51,7 @@ TreeNode *newStmtNode(StmtKind kind)
 
 TreeNode *newExpNode(ExpKind kind)
 {
-    printf("build exp node\n");
+ //   printf("build exp node\n");
     TreeNode* t = (TreeNode *)malloc(sizeof(TreeNode));
     if (t == NULL) 
         raiseException("Out of memory", lineno);
@@ -65,7 +69,7 @@ TreeNode *newExpNode(ExpKind kind)
 
 TreeNode *newFuncNode(FuncKind kind)
 {
-    printf("build func node\n");
+ //   printf("build func node\n");
     TreeNode* t = (TreeNode *)malloc(sizeof(TreeNode));
     if (t == NULL) 
         raiseException("Out of memory", lineno);
@@ -97,7 +101,7 @@ TreeNode *newTurpleNode()
     return t;
 }
 
-char* StrClone(char* s) {
+char* StrClone(const char* s) {
     if (s == NULL)
         return NULL;
     char *t = malloc(strlen(s) + 1);
@@ -109,6 +113,11 @@ char* StrClone(char* s) {
 }
 
 static int indentno = 0;
+
+void Resetindent() {
+    indentno = 0;
+}
+
 static void printSpaces(void) {
     for (int i = 0; i < indentno - 1; i++)
         printf(" ");
@@ -118,8 +127,6 @@ static void printSpaces(void) {
 
 void printTree(TreeNode * tree) {
     indentno += 2;
-    if (indentno > 20)
-        return ;
     while (tree != NULL) {
         printSpaces();
         if (tree->nodekind==StmtK) { 
@@ -142,13 +149,17 @@ void printTree(TreeNode * tree) {
             switch (tree->kind.exp) {
                 case OpK:
                 printf("Op: ");
-                printToken(tree->attr.op,"\0");
+                printToken(tree->attr.op);
+                printf("\n");
                 break;
                 case ConstK:
                 printf("Const: %d\n",tree->attr.val);
                 break;
                 case IdK:
                 printf("Id: %s\n",tree->attr.name);
+                break;
+                case CallK:
+                printf("Call: %s\n", tree->attr.name);
                 break;
                 default:
                 printf("Unknown ExpNode kind\n");

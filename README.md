@@ -2,5 +2,6 @@
 ## Usage
 
 ``` shell
-make parser
+make 
+make test
 ```

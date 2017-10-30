@@ -11,8 +11,7 @@
 #include "util.h"
 
 #define MAXSYMBOLNUM 2000
-#define MAXDEPTH 10000
-String symbol[MAXSYMBOLNUM];
+#define MAXDEPTH 20
 
 void dfs_goal(TreeNode* t);
 void dfs_definitions(TreeNode *t);
@@ -27,6 +26,7 @@ void dfs_stmt(TreeNode *t);
 void dfs_if_stmt(TreeNode *t);
 void dfs_while_stmt(TreeNode *t);
 void dfs_assign_stmt(TreeNode *t);
+void dfs_args(TreeNode *t);
 String dfs_expression(TreeNode *t);
 
 #endif

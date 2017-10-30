@@ -83,4 +83,12 @@ typedef struct Treenode
 extern int Error;
 
 typedef const char* String;
+
+typedef struct _symbol 
+{
+    int depth, id;
+    const char* name;
+    struct _symbol* next; 
+} Symbol;
+
 #endif
