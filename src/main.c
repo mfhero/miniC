@@ -16,12 +16,13 @@ int lineno;
 int Error;
 TreeNode * savedTree;
 
-int main() {
+int main(int argv, char * argc[]) {
     yyparse();
-   // freopen("gen.ast", "w", stdout);
-   // printTree(savedTree);
-
-   // freopen("gen.out.eeyore", "w", stdout);
+    if (argv > 1) {
+        freopen("gen.ast", "w", stdout);
+        printTree(savedTree);
+        freopen("gen.out.eeyore", "w", stdout);
+    }
     dfs_goal(savedTree);
     return 0;
 }

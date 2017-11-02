@@ -18,7 +18,8 @@ number      {digit}+
 letter      [a-zA-Z]
 identifier  {letter}+
 newline     \n
-whitespace  [ \t]+
+whitespace  [ \t\r]+
+hints \/\/(.)*\n
 
 %%
 
@@ -33,6 +34,7 @@ whitespace  [ \t]+
 "-"             {return MINUS;}
 "*"             {return TIMES;}
 "/"             {return OVER;}
+"%"             {return MOD;}
 "<"             {return LT;}
 ">"             {return GT;}
 "=="            {return EQ;}
@@ -52,10 +54,12 @@ whitespace  [ \t]+
 {identifier}    {yylval = newExpNode(IdK); yylval->attr.name = StrClone(yytext); return ID;}
 {newline}       {lineno++;}
 {whitespace}    {/* skip whitespace */}
-"//"            { char c;
+{hints}            { char c;
                   do {
+                      break;
                       c = input();
                   } while (c != '\n' && c != EOF);
+                     lineno++;
                 }
 .               {return ERROR;}
 

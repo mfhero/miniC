@@ -10,8 +10,8 @@
 #include "globals.h"
 #include "util.h"
 
-#define MAXSYMBOLNUM 2000
-#define MAXDEPTH 20
+#define MAXSYMBOLNUM 200000
+#define MAXDEPTH 200
 
 void dfs_goal(TreeNode* t);
 void dfs_definitions(TreeNode *t);

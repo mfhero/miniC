@@ -17,7 +17,7 @@ static void saveStatus(void); // save token name and lineno
 %}
 
 %token IF ELSE WHILE RETURN INT MAIN
-%token ASSIGN PLUS MINUS TIMES OVER EQ LT GT COMMA
+%token ASSIGN PLUS MINUS TIMES OVER MOD EQ LT GT COMMA
 %token NE NOT OR AND 
 %token LPAREN RPAREN LPARENX RPARENX SEMI LBLOCK RBLOCK  
 %token ID NUM 
@@ -258,6 +258,13 @@ term        : term TIMES factor
                    $$->child[1] = $3;
                    $$->attr.op = OVER;
                  }
+           | term MOD factor
+                 { $$ = newExpNode(OpK);
+                   $$->child[0] = $1;
+                   $$->child[1] = $3;
+                   $$->attr.op = MOD;
+                 }
+           
             | factor { $$ = $1; }
             ;
 
@@ -273,7 +280,11 @@ factor      : LPAREN expression RPAREN { $$ = $2; }
                 $$->attr.name = StrClone($1->attr.name);
                 $$->child[0] = $3;
               }    
-            | ERROR { $$ = NULL; }
+            | MINUS factor {
+                $$ = newExpNode(OpK);
+                $$->child[0] = $2;
+                $$->attr.op = MINUS;
+              }
             ;
 
 args        : { $$ = NULL; }

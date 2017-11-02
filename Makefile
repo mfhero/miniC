@@ -20,6 +20,8 @@ ECHOE := \033[0m"
 all : $(BUILD_DIR)/tinyC 
 	cp $< a.out
 
+a.out : all
+
 $(BUILD_DIR)/tinyC : $(OBJS) $(CPRE_BUILD)
 	$(ECHOS)Building tinyC... $(ECHOE)
 	$(CC) $(CFLAGS) -o $@ $(OBJS)
@@ -51,5 +53,6 @@ parser : $(CPRE_BUILD)
 tar : 
 	git archive --format tar --output ../1400012705.tar master 
 
-test : $(BUILD_DIR)/tinyC
-	./$< < test/test.cpp 
+test : a.out
+	#./$< < test/test.cpp > gen.out.eeyore 
+	python test/score.py

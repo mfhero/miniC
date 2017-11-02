@@ -11,9 +11,9 @@
 
 #define abs(x) ((x)>0?(x):-(x))
 
-static TreeNode* nodes[MAXDEPTH];
+static TreeNode* nodes[MAXSYMBOLNUM];
 static int node_cnt; 
-static int availabel_tmp, availabel_label, availabel_var, availabel_param;
+static int available_tmp, available_label, available_var, available_param;
 
 static Symbol* symbol_table = NULL;
 static int depth;
@@ -60,9 +60,9 @@ static int RegisterSymbolOnTable(const char* name, int len) {
     p->name = name;
     p->depth = depth;
     if (depth >= 0) 
-        p->id = availabel_var++;
+        p->id = available_var++;
     else
-        p->id = -availabel_param++;
+        p->id = -available_param++;
     p->next = symbol_table;
     symbol_table = p;
     PrintSpaceBaseDepth();
@@ -74,18 +74,18 @@ static int RegisterSymbolOnTable(const char* name, int len) {
         else if (len == 0)
             printf("var T%d\n", p->id);
     } else {
-        printf("//register %s as p%d\n", name, -p->id);
+        printf("//register %s as p%d\n", name, -p->id - 1);
     }
 }
 
 static int get_tmp() {
     PrintSpaceBaseDepth();
-    printf("var t%d\n", availabel_tmp);
-    return availabel_tmp++;
+    printf("var t%d\n", available_tmp);
+    return available_tmp++;
 }
 
 void dfs_goal(TreeNode* t) {
-    availabel_label = availabel_tmp = availabel_var = node_cnt = 0;
+    available_label = available_tmp = available_var = node_cnt = 0;
     dfs_definitions(t->child[0]);
     dfs_mainfunc(t->child[1]);
 }
@@ -116,7 +116,7 @@ void dfs_functiondefition(TreeNode *t) {
     PrintSpaceBaseDepth();
     printf("//function %s:\n", t->attr.name);
     depth++;
-    availabel_param = 1;
+    available_param = 1;
     node_cnt = 0;
     depth = -depth;
     dfs_vardefinitions(t->child[0]);
@@ -124,7 +124,7 @@ void dfs_functiondefition(TreeNode *t) {
     depth--; PrintSpaceBaseDepth(); depth++;
     printf("f_%s [%d]\n", t->attr.name, node_cnt);
     dfs_stmts(t->child[1]);
-    depth--; PrintSpaceBaseDepth();
+    depth--; FlushTable(); PrintSpaceBaseDepth();
     printf("end f_%s\n\n", t->attr.name);
 }
 
@@ -189,48 +189,48 @@ void dfs_if_stmt(TreeNode *t) {
     printf("//if\n");
     depth++;
     const char * flag = dfs_expression(t->child[0]);
-    depth--;
-    int l1 = availabel_label++;
+    depth--; FlushTable();
+    int l1 = available_label++;
     PrintSpaceBaseDepth(); 
     printf("if %s == 0 goto l%d\n", flag, l1);
     depth++;
     dfs_stmt(t->child[1]);
-    depth--;
+    depth--; FlushTable();
     if (t->child[2] == NULL) {
         PrintSpaceBaseDepth();
         printf("//endif\n");
         //PrintSpaceBaseDepth();
         printf("l%d:\n\n", l1);
     } else {
-        int l2 = availabel_label++;
+        int l2 = available_label++;
         depth++; PrintSpaceBaseDepth();
         printf("goto l%d\n", l2);
-        depth--; PrintSpaceBaseDepth();
+        depth--; FlushTable(); PrintSpaceBaseDepth();
         printf("//else\n");
-        printf("l%d:", l1);
+        printf("l%d:\n", l1);
         depth++; 
         dfs_stmt(t->child[2]);
-        depth--; //PrintSpaceBaseDepth();
-        printf("l%d\n:", l2);
+        depth--; FlushTable(); //PrintSpaceBaseDepth();
+        printf("l%d:\n", l2);
         PrintSpaceBaseDepth();
         printf("//endif\n\n");
     }
 }
 
 void dfs_while_stmt(TreeNode *t) {
-    int l1 = availabel_label++;
+    int l1 = available_label++;
     PrintSpaceBaseDepth();
     printf("//while\n");
     //PrintSpaceBaseDepth();
     printf("l%d:\n", l1);
     depth++;
     const char * flag = dfs_expression(t->child[0]);
-    int l2 = availabel_label++;
-    depth--; PrintSpaceBaseDepth();
+    int l2 = available_label++;
+    depth--; FlushTable(); PrintSpaceBaseDepth();
     printf("if %s == 0 goto l%d\n", flag, l2); 
     depth++;
     dfs_stmt(t->child[1]);
-    depth--; PrintSpaceBaseDepth();
+    depth--; FlushTable(); PrintSpaceBaseDepth();
     printf("goto l%d\n", l1);
     PrintSpaceBaseDepth();
     printf("//end_while\n\n");
@@ -259,7 +259,7 @@ void dfs_assign_stmt(TreeNode *t) {
     if (vals >= 0)
         printf("T%d", vals);
     else 
-        printf("p%d", -vals + 1);
+        printf("p%d", -vals - 1);
     if (t->child[1]) 
         printf(" [t%d]", realindex);
     printf(" = %s\n", val);
@@ -303,7 +303,7 @@ const char * dfs_expression(TreeNode *t) {
             if (val >= 0)
                 sprintf(res, "T%d", val);
             else 
-                sprintf(res, "p%d", -val + 1);
+                sprintf(res, "p%d", -val - 1);
             if (t->child[0]) {
                 char* arr = StrClone(res);
                 char* val2 = 

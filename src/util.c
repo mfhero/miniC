@@ -20,6 +20,7 @@ void printToken(const TokenType token) {
         case MINUS: printf("-"); break;    
         case TIMES: printf("*"); break;   
         case OVER: printf("/"); break; 
+        case MOD: printf("%%"); break;
         case AND: printf("&&"); break; 
         case NOT: printf("!"); break; 
         case OR: printf("||"); break; 
