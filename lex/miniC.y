@@ -187,13 +187,13 @@ expression  : boolean_exp { $$ = $1; }
 boolean_exp : boolean_exp AND simple_bool_exp 
                 { $$ = newExpNode(OpK);
                   $$->child[0] = $1;
-                  $$->child[1] = $2;
+                  $$->child[1] = $3;
                   $$->attr.op = AND;
                 }
             | boolean_exp OR simple_bool_exp 
                 { $$ = newExpNode(OpK);
                   $$->child[0] = $1;
-                  $$->child[1] = $2;
+                  $$->child[1] = $3;
                   $$->attr.op = OR;
                 }
             | simple_bool_exp { $$ = $1; }

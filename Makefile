@@ -54,5 +54,4 @@ tar :
 	git archive --format tar --output ../1400012705.tar master 
 
 test : a.out
-	#./$< < test/test.cpp > gen.out.eeyore 
 	python test/score.py

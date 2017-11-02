@@ -15,7 +15,7 @@ def run_with_check(cmd):
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
     os.chdir("../")
-    status, files = getstatusoutput('find test/ -name "*.c"')
+    status, files = getstatusoutput('find test/ -maxdepth 1 -name "*.c"')
 
     tmp_dir = "test/tmp"
     if os.path.isdir(tmp_dir):
