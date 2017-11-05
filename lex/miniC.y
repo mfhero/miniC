@@ -129,7 +129,6 @@ stmt        : if_stmt { $$ = $1; }
             | vardefinition SEMI { $$ = $1; }
             | LBLOCK stmts RBLOCK { $$ = $2; }
             | expression SEMI { $$ = $1; }
-            | ERROR  { $$ = NULL; }
             ;
 
 if_stmt     : IF LPAREN expression RPAREN stmt 
@@ -229,6 +228,7 @@ simple_bool_exp
                   $$->child[0] = $2;
                   $$->attr.op = NOT;
                 }
+            | int_exp { $$ = $1; }
             ;
 
 int_exp    : int_exp PLUS term 

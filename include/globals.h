@@ -87,7 +87,7 @@ typedef const char* String;
 
 typedef struct _symbol 
 {
-    int depth, id;
+    int depth, id, len;
     const char* name;
     struct _symbol* next; 
 } Symbol;

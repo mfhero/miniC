@@ -10,7 +10,7 @@
 
 
 void raiseException(const char *message, int lineno) {
-    printf("Line %d:    %s\n", lineno, message);
+    fprintf(stderr, "Line %d:    %s\n", lineno, message);
     Error = 1;
 }   
 

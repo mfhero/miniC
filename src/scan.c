@@ -17,6 +17,7 @@ static int available_tmp, available_label, available_var, available_param;
 
 static Symbol* symbol_table = NULL;
 static int depth;
+static int symbol_len;
 
 static const char* int2str(int i) {
     return "0";
@@ -43,12 +44,13 @@ static void FlushTable() {
     symbol_table = p;
 }
    
-
 static int GetSymbolFromTable(const char* name) {
     FlushTable();
     for (Symbol* p = symbol_table; p; p = p->next) {
-        if (strcmp(p->name, name) == 0) 
+        if (strcmp(p->name, name) == 0) {
+            symbol_len = p->len;
             return p->id;
+        }
     }
     printf("//Unknown Symbol\n");
     return 99999;
@@ -59,6 +61,7 @@ static int RegisterSymbolOnTable(const char* name, int len) {
     Symbol *p = (Symbol*)malloc(sizeof(Symbol));
     p->name = name;
     p->depth = depth;
+    p->len = len;
     if (depth >= 0) 
         p->id = available_var++;
     else
@@ -247,6 +250,7 @@ void dfs_assign_stmt(TreeNode *t) {
         return ;
     }
     int vals = GetSymbolFromTable(t->attr.name);
+    int val_len = symbol_len;
     char* index;
     int realindex;
     if (t->child[1]) {
@@ -260,8 +264,14 @@ void dfs_assign_stmt(TreeNode *t) {
         printf("T%d", vals);
     else 
         printf("p%d", -vals - 1);
-    if (t->child[1]) 
+    if (t->child[1]) {
         printf(" [t%d]", realindex);
+        if (val_len == 0) 
+            raiseException("int use as array", t->lineno);
+    } else {
+        if (val_len != 0) 
+            raiseException("array use as int", t->lineno);
+    }
     printf(" = %s\n", val);
 }
 
@@ -300,6 +310,7 @@ const char * dfs_expression(TreeNode *t) {
             return t->attr.name;
         case IdK: {
             int val = GetSymbolFromTable(t->attr.name);
+            int val_len = symbol_len;
             if (val >= 0)
                 sprintf(res, "T%d", val);
             else 
@@ -315,6 +326,11 @@ const char * dfs_expression(TreeNode *t) {
                 PrintSpaceBaseDepth();
                 printf("t%d = %s [t%d]\n", tmp0, arr, val3);
                 sprintf(res, "t%d", tmp0);
+                if (val_len == 0) 
+                    raiseException("int use as array", t->lineno);
+            } else {
+                if (val_len != 0) 
+                    raiseException("array use as int", t->lineno);
             }
             return res;
         }

@@ -17,6 +17,7 @@ int Error;
 TreeNode * savedTree;
 
 int main(int argv, char * argc[]) {
+    lineno = 1;
     yyparse();
     if (argv > 1) {
         freopen("gen.ast", "w", stdout);
