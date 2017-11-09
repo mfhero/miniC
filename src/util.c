@@ -86,7 +86,7 @@ TreeNode *newFuncNode(FuncKind kind)
     return t;
 }
 
-TreeNode *newTurpleNode()
+TreeNode *newTupleNode()
 {
     TreeNode* t = (TreeNode *)malloc(sizeof(TreeNode));
     if (t == NULL) 
@@ -95,7 +95,7 @@ TreeNode *newTurpleNode()
         for (int i = 0; i < MAXCHILDREN; i++)
             t->child[i] = NULL;
         t->sibling = NULL;
-        t->nodekind = TurpleK;
+        t->nodekind = TupleK;
         t->lineno = lineno;
         t->type = Void;
     }
@@ -167,8 +167,8 @@ void printTree(TreeNode * tree) {
                 break;
             }
         }
-        else if (tree->nodekind==TurpleK) {
-            printf("Turple\n");
+        else if (tree->nodekind==TupleK) {
+            printf("Tuple\n");
         } else if (tree->nodekind==FuncK) {
             printf("Function: %s\n", tree->attr.name);
         } else 

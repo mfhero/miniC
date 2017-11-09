@@ -56,7 +56,7 @@ extern int lineno;
 
 /****************  Syntax tree ******************/
 
-typedef enum {StmtK,ExpK,TurpleK,FuncK} NodeKind;
+typedef enum {StmtK,ExpK,TupleK,FuncK} NodeKind;
 typedef enum {IfK,WhileK,AssignK,GetK,PutK} StmtKind;
 typedef enum {DefK,DecK} FuncKind;
 typedef enum {OpK,ConstK,IdK,CallK} ExpKind;

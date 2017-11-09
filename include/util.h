@@ -10,7 +10,7 @@
 
 TreeNode * newStmtNode(StmtKind);
 TreeNode * newExpNode(ExpKind);
-TreeNode * newTurpleNode();
+TreeNode * newTupleNode();
 TreeNode * newFuncNode();
 
 char* StrClone(const char *);

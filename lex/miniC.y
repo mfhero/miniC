@@ -32,7 +32,7 @@ program     : goal
 
 goal        : definitions mainfunc
                  { 
-                    $$ = newTurpleNode();
+                    $$ = newTupleNode();
                     $$->child[0] = $1;
                     $$->child[1] = $2;
                  }
@@ -40,7 +40,7 @@ goal        : definitions mainfunc
 
 definitions :  { $$ = NULL; }
             | definitions definition {
-                $$ = newTurpleNode();
+                $$ = newTupleNode();
                 $$->child[0] = $1;
                 $$->child[1] = $2;
             }
@@ -97,9 +97,9 @@ functiondeclare  : INT ID LPAREN vardefinitions RPAREN SEMI
                  ;
 
 vardefinitions : {  $$ = NULL; }
-                 | vardefinition { $$ = newTurpleNode(); $$->child[0] = $1; }
+                 | vardefinition { $$ = newTupleNode(); $$->child[0] = $1; }
                  | vardefinitions COMMA vardefinition {
-                    $$ = newTurpleNode();
+                    $$ = newTupleNode();
                     $$->child[0] = $1;
                     $$->child[1] = $3;
                 }
@@ -107,7 +107,7 @@ vardefinitions : {  $$ = NULL; }
 
 stmts       : { $$ = NULL; }
             | stmt stmts { 
-                $$ = newTurpleNode();
+                $$ = newTupleNode();
                 $$->child[0] = $1;
                 $$->child[1] = $2;
                 } 
@@ -292,7 +292,7 @@ args        : { $$ = NULL; }
                 $$ = $1;
                 }
             | args COMMA expression {
-                $$ = newTurpleNode();
+                $$ = newTupleNode();
                 $$->child[0] = $1;
                 $$->child[1] = $3;
             }

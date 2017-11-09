@@ -96,7 +96,7 @@ void dfs_goal(TreeNode* t) {
 void dfs_definitions(TreeNode *t) { 
     if (t == NULL)
         return ;
-    if (t->nodekind == TurpleK) {
+    if (t->nodekind == TupleK) {
         dfs_definitions(t->child[0]);
         dfs_definitions(t->child[1]);
     } else {
@@ -137,7 +137,7 @@ void dfs_functiondeclare(TreeNode *t) {
 void dfs_vardefinitions(TreeNode *t) { 
     if (t == NULL)
         return ;
-    if (t->nodekind == TurpleK) {
+    if (t->nodekind == TupleK) {
         dfs_vardefinitions(t->child[0]);
         dfs_vardefinitions(t->child[1]);
     } else {
@@ -149,7 +149,7 @@ void dfs_vardefinitions(TreeNode *t) {
 void dfs_stmts(TreeNode *t) {
     if (t == NULL)
         return ;
-    if (t->nodekind == TurpleK) {
+    if (t->nodekind == TupleK) {
         dfs_stmts(t->child[0]);
         dfs_stmts(t->child[1]);
     } else {
@@ -161,7 +161,7 @@ void dfs_stmt(TreeNode *t) {
         printf("//Pass\n");
         return ;
     }
-    if (t->nodekind == TurpleK) {
+    if (t->nodekind == TupleK) {
         dfs_stmts(t);
         return ;
     }
@@ -345,7 +345,7 @@ const char * dfs_expression(TreeNode *t) {
 void dfs_args(TreeNode* t) {
     if (t == NULL)
         return ;
-    if (t->nodekind == TurpleK) { 
+    if (t->nodekind == TupleK) { 
         dfs_args(t->child[0]);
         dfs_args(t->child[1]);
     } else {
