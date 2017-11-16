@@ -1,4 +1,4 @@
-BUILD_DIR := gnu_build
+BUILD_DIR := build
 GEN_DIR := ${BUILD_DIR}/gen
 
 CC := @gcc

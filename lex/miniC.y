@@ -14,6 +14,8 @@ extern TreeNode * savedTree; /* stores syntax tree for later return */
 static int yylex(void); // added 11/2/11 to ensure no conflict with lex
 static void saveStatus(void); // save token name and lineno 
 
+int yyerror(char *);
+
 %}
 
 %token IF ELSE WHILE RETURN INT MAIN
@@ -300,7 +302,7 @@ args        : { $$ = NULL; }
 
 %%
 
-int yyerror(char * message)
+int yyerror(char* message)
 { 
     raiseException(message, lineno);
     printf("Syntax Error\n");
@@ -309,6 +311,7 @@ int yyerror(char * message)
 //  Error = 1;
     return 0;
 }
+
 
 /* yylex calls getToken to make Yacc/Bison output
  * compatible with ealier versions of the TINY scanner
@@ -329,7 +332,7 @@ void saveStatus(void) {
     savedName = StrClone(tokenString);
 }
 
-int yywrap() 
+int yywrap(void) 
 { 
    return 1; 
 } 

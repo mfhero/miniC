@@ -7,6 +7,7 @@
 
 #include "globals.h"
 #include "util.h"
+
 #include "miniC.lex.c"
 #include "miniC.yacc.c"
 
@@ -14,15 +15,16 @@
 
 int lineno;
 int Error;
+
 TreeNode * savedTree;
 
 int main(int argv, char * argc[]) {
     lineno = 1;
     yyparse();
     if (argv > 1) {
-        freopen("gen.ast", "w", stdout);
+        freopen("result/gen.ast", "w", stdout);
         printTree(savedTree);
-        freopen("gen.out.eeyore", "w", stdout);
+        freopen("result/gen.out.eeyore", "w", stdout);
     }
     dfs_goal(savedTree);
     return 0;
