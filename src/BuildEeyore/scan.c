@@ -19,6 +19,9 @@ static Symbol* symbol_table = NULL;
 static int depth;
 static int symbol_len;
 
+static char* params[8]; 
+static int params_cnt = 0;
+
 static const char* int2str(int i) {
     return "0";
     char* s = malloc(25);
@@ -299,13 +302,20 @@ const char * dfs_expression(TreeNode *t) {
             sprintf(res, "t%d", val);
             return res;
         }
-        case CallK:
+        case CallK: {
+            int old_cnt = params_cnt;
             dfs_args(t->child[0]);
+            for (int i = old_cnt; i < params_cnt; i++) {
+                PrintSpaceBaseDepth();
+                printf("param %s\n", params[i]);
+            }
+            params_cnt = old_cnt;
             int tmp0 = get_tmp();
             PrintSpaceBaseDepth();
             printf("t%d = call f_%s\n", tmp0, t->attr.name);
             sprintf(res, "t%d", tmp0);
             return res;
+        }
         case ConstK:
             return t->attr.name;
         case IdK: {
@@ -350,8 +360,9 @@ void dfs_args(TreeNode* t) {
         dfs_args(t->child[1]);
     } else {
         const char* val = dfs_expression(t);
-        PrintSpaceBaseDepth();
-        printf("param %s\n", val);
+   //     PrintSpaceBaseDepth();
+   //     printf("param %s\n", val);
+        params[params_cnt++] = StrClone(val);
     }
 }
 

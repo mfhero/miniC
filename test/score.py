@@ -4,6 +4,8 @@
 import os, sys
 from commands import getstatusoutput
 
+import argparse
+
 def run_with_check(cmd):
     status, output = getstatusoutput(cmd)
     if status:
@@ -12,15 +14,7 @@ def run_with_check(cmd):
         print output
         raise Exception('Error', 'Error')
 
-if __name__ == "__main__":
-    os.chdir(os.path.dirname(os.path.realpath(__file__)))
-    os.chdir("../")
-    status, files = getstatusoutput('find test/ -maxdepth 1 -name "*.c"')
-
-    tmp_dir = "test/tmp"
-    if os.path.isdir(tmp_dir):
-        run_with_check("rm -r %s" % tmp_dir)
-    os.makedirs(tmp_dir)
+def score_task1(files):
     for line in files.split():
         basename = line[5:-2]
         print basename
@@ -37,3 +31,17 @@ if __name__ == "__main__":
             print "\033[31mTest <%s> wrong\033[0m" % basename
         else:
             print "\033[32mTest <%s> accept\033[0m" % basename
+
+def score_task2(files):
+    for line in files.split()
+
+if __name__ == "__main__":
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
+    os.chdir("../")
+    status, files = getstatusoutput('find test/ -maxdepth 1 -name "*.c"')
+
+    tmp_dir = "test/tmp"
+    if os.path.isdir(tmp_dir):
+        run_with_check("rm -r %s" % tmp_dir)
+    os.makedirs(tmp_dir)
+  
