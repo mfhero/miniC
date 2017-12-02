@@ -74,7 +74,7 @@ std::string allocator_string(const symbol& s, int v,
                 } else {
                     pre_string += "\n\n";
                     next_string += "loadaddr " + global_s + " " + 
-                        TREG(used_tmp + 1);
+                        TREG(used_tmp + 1) + "\n";
                     next_string += TREG(used_tmp + 1) + 
                         " [ 0 ] = " + tmp_s;
                 }   
