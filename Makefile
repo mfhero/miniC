@@ -26,6 +26,7 @@ ECHOE := \033[0m"
 
 all : $(BUILD_DIR)/CEeyore $(BUILD_DIR)/EeyoreTigger 
 	cp $< a.out
+	chmod +x minicc
 
 a.out : all
 
