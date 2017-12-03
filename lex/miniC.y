@@ -51,7 +51,8 @@ definitions :  { $$ = NULL; }
             }
             ;
 
-definition  : vardefinition SEMI { $$ = $1; } 
+definition  : SEMI
+            | vardefinition SEMI { $$ = $1; } 
             | functiondefition { $$ = $1; }
             | functiondeclare { $$ = $1; }
             ;
@@ -126,7 +127,8 @@ mainfunc    : INT MAIN LPAREN RPAREN LBLOCK stmts RBLOCK {
                 }
             ;
 
-stmt        : if_stmt { $$ = $1; }
+stmt        : SEMI
+            | if_stmt { $$ = $1; }
             | while_stmt { $$ = $1; }
             | assign_stmt { $$ = $1; }
             | assign_list_stmt { $$ = $1; }
@@ -308,7 +310,8 @@ args        : { $$ = NULL; }
 int yyerror(char* message)
 { 
     raiseException(message, lineno);
-    printf("Syntax Error\n");
+    //fprintf(stderr, "Syntax Error\n");
+    fprintf(stderr, "%s\n", yytext);
 //    printf("Current token: ");
 //    printToken(yychar,tokenString);
 //  Error = 1;
