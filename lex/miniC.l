@@ -15,7 +15,7 @@ char tokenString[MAXTOKENLEN+1];
 
 digit       [0-9]
 number      {digit}+
-letter      [a-zA-Z]
+letter      [a-zA-Z_]
 identifier  {letter}+
 newline     \n
 whitespace  [ \t\r]+
