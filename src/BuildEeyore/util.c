@@ -10,7 +10,7 @@
 
 
 void raiseException(const char *message, int lineno) {
-    fprintf(stderr, "Line %d:    %s\n", lineno, message);
+    fprintf(stderr, "miniC error: Line %d: %s\n", lineno, message);
     Error = 1;
 }   
 

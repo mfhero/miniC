@@ -26,7 +26,10 @@ int yyerror(char *);
 %token ERROR 
 //%token END REPEAT UNTIL READ WRITE
 
-%% /* Grammar for TINY */
+/* Grammar for TINY */
+%%
+
+
 
 program     : goal
                  { savedTree = $1;} 

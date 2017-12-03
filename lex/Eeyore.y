@@ -164,7 +164,7 @@ factor : SYMBOL { $$ = $1; }
 //Miss some check, because Eeyore must correct from my code
 
 void yyerror(const char *s) {
-    fprintf(stderr, "Line %d: %s\n", lineno, s);
+    fprintf(stderr, "Eeyore : Line %d: %s\n", lineno, s);
 }
 
 extern "C" int yywrap(void) 

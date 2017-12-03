@@ -24,10 +24,15 @@ ECHOE := \033[0m"
 
 .PHONY : all test clean build_dir parser zip test
 
-all : $(BUILD_DIR)/CEeyore $(BUILD_DIR)/EeyoreTigger 
-	cp $< a.out
-	cat scripts/minicc.sh > minicc
-	chmod +x minicc
+all : $(BUILD_DIR)/CEeyore $(BUILD_DIR)/EeyoreTigger scripts/minicc.sh
+	$(ECHOS)LINK a.out $(ECHOE)
+	@cp $< a.out
+	$(ECHOS)BUILD minicc $(ECHOE)
+	@cat scripts/minicc.sh > minicc
+	$(ECHOS)CHMOD minicc $(ECHOE)
+	@chmod +x minicc
+
+minicc : all
 
 a.out : all
 

@@ -61,8 +61,8 @@ void function_block::setup() {
                             used_global[s->name] = x;
                         }
                         s->allocator = used_global[s->name];
-                        cerr << s->name << " get allocator " <<
-                            s->id << endl;
+                        //cerr << s->name << " get allocator " <<
+                        //    s->id << endl;
                     }
                 } else {
                     s->id = it->second;
@@ -192,9 +192,9 @@ void function_block::reg_allocate(vector<live_interval> live_intervals) {
 
     sort(live_intervals.begin(), live_intervals.end());   
     for (auto p : live_intervals) {
-        cerr << p.live_range.first << ',' << p.live_range.second << "\n";
-        if (!p.refer_symbol.empty())
-            cerr << p.refer_symbol[0].second->name << "\n";
+        //cerr << p.live_range.first << ',' << p.live_range.second << "\n";
+        //if (!p.refer_symbol.empty())
+        //    cerr << p.refer_symbol[0].second->name << "\n";
     }   
     
     bool flag[MAXALLOCATOR + MAXSTACK];
