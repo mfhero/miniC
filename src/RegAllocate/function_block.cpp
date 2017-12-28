@@ -55,14 +55,6 @@ void function_block::setup() {
                         s->id = cnt++;
                     } else {
                         s->id = 0;//symbol_map[s->name] = cnt;
-                        if (used_global.find(s->name) == used_global.end()) {
-                            int x = (stack_size < MAXALLOCATOR) ?
-                                stack_size++ : -it2->second - 1;
-                            used_global[s->name] = x;
-                        }
-                        s->allocator = used_global[s->name];
-                        //cerr << s->name << " get allocator " <<
-                        //    s->id << endl;
                     }
                 } else {
                     s->id = it->second;
@@ -229,6 +221,25 @@ void function_block::reg_allocate(vector<live_interval> live_intervals) {
             used_param[p.refer_symbol[0].second->name] = min_flag;
 
         active_intervals.push(make_pair(-p.live_range.second, &p));
+    }
+
+    //global register 
+    used_global.clear();
+    for (auto p : statements) {
+        for (auto s : p->all_symbol()) 
+            if (check_var(s->name) == normalV) {
+                auto it2 = global_symbol.find(s->name);
+                if (it2 == global_symbol.end())
+                    continue;
+                if (!INMAP(s->name, used_global)) {
+                    int x = (stack_size < MAXALLOCATOR) ?
+                            stack_size++ : -it2->second - 1;
+                    used_global[s->name] = x;
+                }
+                s->allocator = used_global[s->name];
+                //cerr << s->name << " get allocator " <<
+                //    s->id << endl;
+            }
     }
 }
 

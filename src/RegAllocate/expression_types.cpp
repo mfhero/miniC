@@ -171,6 +171,10 @@ string array_expression::build(string& pre, string& next) {
 string Statement::tiger_string() { 
     string pre = "", next = "";
     string s;
+    if (exp->this_type() == symbolE && 
+        Valid(static_cast<symbol_expression*>(exp)->get_symbol()) &&
+        a.allocator == static_cast<symbol_expression*>(exp)->get_symbol().allocator)
+        return "";
     s = allocator_string(a, 0, pre, next);
     if (Valid(index)) {
         string index_s = allocator_string(index, offset, pre, next);

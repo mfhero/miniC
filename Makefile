@@ -5,18 +5,18 @@ CC := @gcc
 CXX := @g++ -std=c++11
 CFLAGS := -Iinclude -I${GEN_DIR} -Iinclude/BuildEeyore -g
 
-C_SRCS := $(shell find src/ -name "*.c")
-CXX_SRCS := $(shell find src/ -name "*.cpp")
-C_OBJS := $(addprefix $(BUILD_DIR)/c/, ${C_SRCS:.c=.o}) 
-CXX_OBJS := $(addprefix $(BUILD_DIR)/cpp/, ${CXX_SRCS:.cpp=.o})
-OBJS := $(C_OBJS) $(CXX_OBJS)
+BE_SRCS := $(shell find src/BuildEeyore -name "*.c")
+BE_OBJS := $(addprefix $(BUILD_DIR)/c/, ${BE_SRCS:.c=.o}) 
+RA_SRCS := $(shell find src/RegAllocate/ -name "*.cpp")
+RA_OBJS := $(addprefix $(BUILD_DIR)/cpp/, ${RA_SRCS:.cpp=.o})
+OBJS := $(BE_OBJS) $(RA_OBJS)
+
 C_INCLUDE_FILES := $(shell find include -name "*.h")
 CXX_INCLUDE_FILES := $(shell find include -name "*.hpp")
 
 GEN_CXX := $(GEN_DIR)/Eeyore.lex.cpp $(GEN_DIR)/Eeyore.yacc.cpp
-GEN_LEX := $(GEN_DIR)/miniC.lex.c 
-GEN_YACC := $(GEN_DIR)/miniC.yacc.c 
-CPRE_BUILD := $(GEN_LEX) $(GEN_YACC) $(C_INCLUDE_FILES) 
+GEN_C := $(GEN_DIR)/miniC.lex.c $(GEN_DIR)/miniC.yacc.c 
+CPRE_BUILD := $(C_INCLUDE_FILES) $(GEN_C)
 CXX_PRE_BUILD := $(CXX_INCLUDE_FILES) $(GEN_CXX)
 
 ECHOS := @echo "\033[32m
@@ -36,17 +36,17 @@ minicc : all
 
 a.out : all
 
-$(BUILD_DIR)/CEeyore : $(C_OBJS) $(CPRE_BUILD)
+$(BUILD_DIR)/CEeyore : $(BE_OBJS) $(CPRE_BUILD)
 	$(ECHOS)Building CEeyore... $(ECHOE)
-	$(CC) $(CFLAGS) -o $@ $(C_OBJS)
+	$(CC) $(CFLAGS) -o $@ $(BE_OBJS)
 	$(ECHOS)Success! $(ECHOE)
 
-$(BUILD_DIR)/EeyoreTigger : $(CXX_OBJS) $(CXX_PRE_BUILD)
+$(BUILD_DIR)/EeyoreTigger : $(RA_OBJS) $(CXX_PRE_BUILD)
 	$(ECHOS)Building EeyoreTigger... $(ECHOE)
-	$(CXX) $(CFLAGS) -o $@ $(CXX_OBJS) 
+	$(CXX) $(CFLAGS) -o $@ $(RA_OBJS) 
 	$(ECHOS)Success! $(ECHOE)
 
-build_dir : 
+build_dir: 
 	$(ECHOS)Build Project on $(BUILD_DIR)$(ECHOE)
 	@mkdir -p $(GEN_DIR) 
 	@dirname $(OBJS) | xargs mkdir -p
@@ -62,10 +62,6 @@ $(BUILD_DIR)/cpp/%.o: %.cpp $(CXX_INCLUDE_FILES)
 $(BUILD_DIR)/c/%.o: %.c $(CPRE_BUILD)
 	$(ECHOS)CC $< $(ECHOE)
 	$(CC) $(CFLAGS) $< -o $@ -c 
-
-#$(BUILD_DIR)/gen/%.o: $(GEN_DIR)/%.c $(CXX_CPRE_BUILD)
-#	$(ECHOS)CC $< $(ECHOE)
-#	$(CC) $(CFLAGS) $< -o $@ -c 
 
 $(GEN_DIR)/%.lex.c : lex/%.l | build_dir
 	$(ECHOS)FLEX $< $(ECHOE)
@@ -88,6 +84,8 @@ $(GEN_DIR)/%.yacc.cpp : lex/%.y | build_dir
 
 clean :
 	@rm -rf $(BUILD_DIR)
+	@rm a.out
+	@rm minicc
 	$(ECHOS)Done$(ECHOE)
 	
 parser : $(CPRE_BUILD)
