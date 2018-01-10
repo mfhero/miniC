@@ -11,6 +11,8 @@ extern int yylineno;
 int yylex(void);
 void yyerror(const char*);
 
+#define MUL4(x) (std::to_string(std::stoi(x) * 4))
+
 %}
 
 %token REGISTER NUMBER
@@ -79,9 +81,9 @@ expression : REGISTER '=' integer
            | CALL FUNCTION 
            { printline("call", $2.substr(2)); }
            | STORE REGISTER NUMBER
-           { printline2("sw", $2, $3, "sp"); }
+           { printline2("sw", $2, MUL4($3), "sp"); }
            | LOAD NUMBER REGISTER 
-           { printline2("lw", $3, $2, "sp"); }
+           { printline2("lw", $3, MUL4($2), "sp"); }
            | LOAD REGISTER REGISTER 
            { PrintLoadGlobal($2, $3); }
            | LOADADDR NUMBER REGISTER 

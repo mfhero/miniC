@@ -17,5 +17,5 @@ QEMU=/opt/riscv-qemu/bin/qemu-riscv64
 LINKD=/opt/riscv-glibc/sysroot/
 EXE=$project_dir/result/a.out
 
-$GCC -o $EXE $1 $LIBS
+$GCC -o $EXE -static $1 $LIBS
 $QEMU -L $LINKD $EXE

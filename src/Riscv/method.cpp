@@ -67,7 +67,11 @@ void PrintOp(string op, string a, string b, string c) {
     if (op == "*") opname = "mul";
     if (op == "/") opname = "div";
     if (op == "%") opname = "rem";
-    if (op == "<") opname = "slt";
+    if (op == "<") 
+        if (c[0] >= '0' && c[0] <= '9')
+            opname = "slti";
+        else
+            opname = "slt";
     if (op == ">") opname = "sgt";
     if (opname != "") {
         printline(opname, a, b, c);
@@ -88,7 +92,7 @@ void PrintOp(string op, string a, string b, string c) {
     }
     if (op == "==") {
         printline("xor", a, b, c);
-        printline("seqz", a, b, c);
+        printline("seqz", a, a);
     }
 }
 

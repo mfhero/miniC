@@ -51,7 +51,25 @@ def score_task2(line):
     else:
         print "\033[32mTest <%s> accept\033[0m" % basename
 
-score_method = [None ,score_task1, score_task2]
+def score_task3(line):
+    basename = line.replace("test/", "")
+    basename = basename.replace(".c", "")
+    print basename 
+    exec_file = "%s/%s.s" % (tmp_dir, basename)
+    out_data = "%s/%s.s_out" % (tmp_dir, basename)
+    run_with_check("./scripts/CRiscv.sh %s %s" \
+                   % (line, exec_file))
+    run_with_check("./scripts/RunRiscv.sh %s < test/%s.in > %s" \
+                   % (exec_file, basename, out_data))
+    try:
+        run_with_check('diff -w test/%s.out %s' \
+                   % (basename, out_data))
+    except:
+        print "\033[31mTest <%s> wrong\033[0m" % basename
+    else:
+        print "\033[32mTest <%s> accept\033[0m" % basename
+
+score_method = [None, score_task1, score_task2, score_task3]
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
@@ -69,4 +87,7 @@ if __name__ == "__main__":
         os.makedirs(tmp_dir)
     for line in files.split():
         for i in args.task:
-            score_method[i](line)
+            try:
+                score_method[i](line)
+            except:
+                pass
