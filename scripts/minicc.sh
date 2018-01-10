@@ -7,4 +7,4 @@
 # Created Time: 2017-12-02 15:41
 ################################################################
 
-bash ./scripts/CTigger.sh "$@"
+bash ./scripts/CRiscv.sh "$@"

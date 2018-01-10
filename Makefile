@@ -107,3 +107,7 @@ testC : ./build/CEeyore
 testE : ./build/EeyoreTigger  
 	$(ECHOS)check Tigger$(ECHOE)
 	python scripts/score.py --task 2
+
+testT : ./build/TiggerRiscv 
+	$(ECHOS)check Riscv
+	python scripts/score.py --task 3

@@ -13,7 +13,7 @@ inf=$1
 if [ $# -eq 2 ]; then
     ouf=$2
 else
-    ouf="result/out.s"
+    ouf="a.s"
 fi
 
 build_dir="$(cd "$(dirname $0)" && pwd)/../build/"
