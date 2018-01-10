@@ -1,33 +1,39 @@
 %{
 #include <cstring>
 #include <cstdio>
+
 #include "tigger.yacc.hpp"
+
 %}
 
 digit       [0-9]
 number      {digit}+
 identifier  [0-9a-zA-Z_]+
 whitespace  [ \t\r\n]+
-register    x{digit}+|s{digit}+|a{digit}+|t{digit}+
-OP \+|\-|\*|\/|\%|\!|\|\||&&|<|>|!=|==
+register    v{digit}+|s{digit}+|a{digit}+|t{digit}+
+label       l{digit}+
+function    f_{identifier}
+op \+|\-|\*|\/|\%|\!|\|\||&&|<|>|!=|==
+
+%option yylineno
 
 %%
 
 "malloc"        {return MALLOC;}
 "if"            {return IF;}
 "goto"          {return GOTO;}
-"call"          {return call}
+"call"          {return CALL;}
 "return"        {return RETURN;}
 "end"           {return END;}
 "load"          {return LOAD;}
 "store"         {return STORE;}
 "loadaddr"      {return LOADADDR;}
-{register}      {return REGISTER;}
-{op}            {return OP;}
+{register}      {yylval = yytext; return REGISTER;}
+{number}        {yylval = yytext; return NUMBER;}
+{op}            {yylval = yytext; return OP;}
+{function}      {yylval = yytext; return FUNCTION;}
+{label}         {yylval = yytext; return LABEL; }
 {whitespace}    {}
+.               {return yytext[0]; }
 
 %%
-
-int yywrap(void) {
-    return 1;
-}

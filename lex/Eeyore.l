@@ -16,6 +16,8 @@ OP \+|\-|\*|\/|\%|\!|\|\||&&|<|>|!=|==
 ASSIGN :=
 hints \/\/(.)*\n
 
+%option yylineno
+
 %%
 " "    
 {hints} { lineno++; } 
