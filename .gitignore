@@ -2,9 +2,6 @@ build
 gnu_build
 tmp
 bak
-test/*.in
-test/*.out
-test/*.c
 a.out
 gen.*
 *.t
