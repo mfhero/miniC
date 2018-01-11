@@ -109,5 +109,5 @@ testE : ./build/EeyoreTigger
 	python scripts/score.py --task 2
 
 testT : ./build/TiggerRiscv 
-	$(ECHOS)check Riscv
+	$(ECHOS)check Riscv$(ECHOE)
 	python scripts/score.py --task 3

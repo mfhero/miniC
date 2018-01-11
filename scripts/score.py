@@ -4,11 +4,16 @@
 import os, sys
 from commands import getstatusoutput
 import argparse
+import time 
 
 tmp_dir = "test/tmp"
 
-def run_with_check(cmd):
+def run_with_check(cmd, count_time = False):
+    start_time = time.time()
     status, output = getstatusoutput(cmd)
+    end_time = time.time()
+    if count_time:
+        print "\033[32mUsed Time: %.2f(ms)\033[0m" % ((end_time - start_time) * 1000)
     if status:
         print "\033[33m", cmd, "\033[0m"
         print status
@@ -24,7 +29,8 @@ def score_task1(line):
     run_with_check('./build/CEeyore < %s > %s' \
                    % (line, exec_file))
     run_with_check('./test/Eeyore %s < test/%s.in > %s' \
-                   % (exec_file, basename, out_data))
+                   % (exec_file, basename, out_data),
+                   count_time = True)
     try:
         run_with_check('diff -w test/%s.out %s' \
                    % (basename, out_data))
@@ -42,7 +48,8 @@ def score_task2(line):
     run_with_check("./scripts/CTigger.sh %s %s" \
                    % (line, exec_file))
     run_with_check("./test/Tigger %s < test/%s.in > %s" \
-                   % (exec_file, basename, out_data))
+                   % (exec_file, basename, out_data),
+                   count_time = True)
     try:
         run_with_check('diff -w test/%s.out %s' \
                    % (basename, out_data))
@@ -60,7 +67,8 @@ def score_task3(line):
     run_with_check("./scripts/CRiscv.sh %s %s" \
                    % (line, exec_file))
     run_with_check("./scripts/RunRiscv.sh %s < test/%s.in > %s" \
-                   % (exec_file, basename, out_data))
+                   % (exec_file, basename, out_data), 
+                   count_time = True)
     try:
         run_with_check('diff -w test/%s.out %s' \
                    % (basename, out_data))

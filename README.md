@@ -1,7 +1,15 @@
 # miniC
 ## Usage
 
-``` shell
 make 
-make test
+
 ```
+make 
+```
+
+or make faster
+
+```
+make -j32
+```
+
