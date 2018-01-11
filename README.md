@@ -57,7 +57,8 @@ Read minic code from INPUTFILE, outputs tigger code to OUTPUTFILE, default ``a.t
 
 ## TEST
 
-~~put test data to ``test``, formatted as ``TEST.c``, ``TEST.in``, ``TEST.out``. And copy simulators(Eeyore, Tigger) to ``test``. ~~The test script will scan every sample from this dir, and build codes from scripts, which will be ran by the simulator and compare outputfile with the sample output.
+~~put test data to ``test``, formatted as ``TEST.c``, ``TEST.in``, ``TEST.out``. And copy simulators(Eeyore, Tigger) to ``test``.~~
+The test script will scan every sample from this dir, and build codes from scripts, which will be ran by the simulator and compare outputfile with the sample output.
 
 >make testC
 
