@@ -24,7 +24,7 @@ CXX_PRE_BUILD := $(CXX_INCLUDE_FILES) $(GEN_CXX)
 ECHOS := @echo "\033[32m
 ECHOE := \033[0m"
 
-.PHONY : all test clean build_dir parser zip test
+.PHONY : all test clean build_dir parser test
 
 all : $(BUILD_DIR)/CEeyore $(BUILD_DIR)/EeyoreTigger $(BUILD_DIR)/TiggerRiscv scripts/minicc.sh
 	$(ECHOS)LINK a.out $(ECHOE)
@@ -95,7 +95,7 @@ clean :
 	@rm minicc
 	$(ECHOS)Done$(ECHOE)
 	
-parser : $(CPRE_BUILD)
+parser : $(CPRE_BUILD) $(CXX_PRE_BUILD)
 
 tar : 
 	git archive --format tar --output ../1400012705.tar master 
