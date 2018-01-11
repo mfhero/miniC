@@ -78,9 +78,10 @@ void PrintOp(string op, string a, string b, string c) {
         return ;
     }
     if (op == "&&") {
-        printline("snez", b, b);
-        printline("snez", c, c);
-        printline("and", a, b, c);
+        printline("seqz", a, b);
+        printline("add", a, a, "-1");
+        printline("and", a, a, c);
+        printline("snez", a, a);
     }
     if (op == "||") {
         printline("or", a, b, c);
